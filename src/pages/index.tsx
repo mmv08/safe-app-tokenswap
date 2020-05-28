@@ -1,22 +1,24 @@
-import React, { useState } from "react"
+import React from "react"
+import styled, { css } from "styled-components"
 import Layout from "components/Layout"
 
-const getAppInfoFromUrl = (url: string) => {
-  console.log(url)
-}
+const centerCSS = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`
 
-const someValue: any = undefined
-
-getAppInfoFromUrl(someValue)
+const SAppContainer = styled.div<{ center: boolean }>`
+  ${(p) => p.center && centerCSS}
+`
 
 const IndexPage = () => {
-  const [iframeEl, setIframeEl] = useState<HTMLIFrameElement>(null)
-
-  console.log(selectedApp)
-
   return (
     <Layout title="Uniswap Gnosis Safe App">
-      <h1>Exchange</h1>
+      <SAppContainer center={process.env.NODE_ENV === "development"}>
+        <h1>Exchange</h1>
+      </SAppContainer>
     </Layout>
   )
 }

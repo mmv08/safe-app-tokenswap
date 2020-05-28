@@ -1,6 +1,7 @@
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin")
+const withFonts = require("next-fonts")
 
-module.exports = {
+module.exports = withFonts({
   webpack: (config) => {
     if (config.resolve.plugins) {
       config.resolve.plugins.push(new TsconfigPathsPlugin())
@@ -11,4 +12,4 @@ module.exports = {
     return config
   },
   target: "serverless",
-}
+})
