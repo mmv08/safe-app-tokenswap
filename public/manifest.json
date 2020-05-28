@@ -1,0 +1,6 @@
+{
+  "name": "TokenSwap",
+  "description": "A Safe app to swap tokens",
+  "iconPath": "swap_horiz.svg",
+  "providedBy": { "name": "Misha", "url": "https://github.com/mikheevm" }
+}
