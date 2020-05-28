@@ -992,6 +992,11 @@
   resolved "https://registry.yarnpkg.com/@emotion/unitless/-/unitless-0.7.5.tgz#77211291c1900a700b8a78cfafda3160d76949ed"
   integrity sha512-OWORNpfjMsSSUBVrRBVGECkhWcULOAJz9ZW8uK9qgxD+87M7jHRcvh/A96XXNhXTLmKcoYSQtBEX7lHMO7YRwg==
 
+"@gnosis.pm/safe-apps-sdk@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-apps-sdk/-/safe-apps-sdk-0.1.1.tgz#94011ba872853ee83c09652348c4a2e3699e3c0e"
+  integrity sha512-nUirtYsXO9kGeO+CnZp3qwO51mxddDnJ1UtSYSFu23CM3xuKuHtM5OXytItvOmtiHtYq8eqEm6MVpIdgb6JHOg==
+
 "@gnosis.pm/safe-react-components@^0.1.2":
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-react-components/-/safe-react-components-0.1.2.tgz#67abee86bdfcf8c3a7c82b3faba691f87f251b7a"

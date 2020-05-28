@@ -2,8 +2,6 @@ import { createGlobalStyle } from "styled-components"
 import avertaFont from "@gnosis.pm/safe-react-components/dist/fonts/averta-normal.woff2"
 import avertaBoldFont from "@gnosis.pm/safe-react-components/dist/fonts/averta-bold.woff2"
 
-console.log(avertaBoldFont)
-
 const GlobalStyle = createGlobalStyle`
     html {
         height: 100%;
@@ -15,7 +13,7 @@ const GlobalStyle = createGlobalStyle`
        padding: 0px;
        font-family: 'Averta';
     }
-    
+
     #root {
         height: 100%;
     }
