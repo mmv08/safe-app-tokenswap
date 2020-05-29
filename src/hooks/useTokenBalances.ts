@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react"
 import superagent from "superagent"
 
-const useTokenBalances = (safeAddress: string) => {
+const useTokenBalances = (safeAddress?: string) => {
   const [tokenBalances, setTokenBalances] = useState([])
 
   useEffect(() => {
     const fetchTokenBalances = async () => {
-      const balances = await superagent.get(`https://safe-transaction.gnosis.io/safes/${safeAddress}/balances`)
+      const res = await superagent.get(`https://safe-transaction.gnosis.io/safes/${safeAddress}/balances`)
 
-      console.log(balances)
-      setTokenBalances(balances)
+      console.log(res)
+      setTokenBalances(res.body)
     }
 
     if (safeAddress) {
