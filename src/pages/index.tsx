@@ -2,6 +2,7 @@ import * as React from "react"
 import styled, { css } from "styled-components"
 import Layout from "components/Layout"
 import { appsSdk } from "gnosisAppsSdk"
+import { useTokenBalances } from "hooks/useTokenBalances"
 
 const centerCSS = css`
   display: flex;
@@ -16,6 +17,8 @@ const SAppContainer = styled.div<{ center: boolean }>`
 
 const IndexPage = () => {
   const [safeInfo, setSafeInfo] = React.useState({})
+
+  const { tokenBalances } = useTokenBalances(safeInfo.address)
 
   React.useEffect(() => {
     appsSdk.addListeners({ onSafeInfo: setSafeInfo })
