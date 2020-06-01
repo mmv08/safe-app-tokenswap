@@ -1,4 +1,4 @@
-const getApiUrl = () => {
+const getApiUrl = (): string => {
   let url = "https://safe-transaction.staging.gnosisdev.com/api/v1/"
 
   if (process.env.NODE_ENV === "production") {
