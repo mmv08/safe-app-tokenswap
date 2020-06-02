@@ -1,6 +1,8 @@
-import React from "react"
+import * as React from "react"
 import MenuItem from "@material-ui/core/MenuItem"
 import FormControl from "@material-ui/core/FormControl"
+import ListItemIcon from "@material-ui/core/ListItemIcon"
+import ListItemText from "@material-ui/core/ListItemText"
 import SelectMUI from "@material-ui/core/Select"
 
 type Props = {
@@ -10,7 +12,7 @@ type Props = {
   id?: string
 }
 
-function Select({ items, activeItemId, onItemClick }: Props) {
+const TokenSelect: React.FC<Props> = ({ items, activeItemId, onItemClick }) => {
   const [open, setOpen] = React.useState(false)
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {

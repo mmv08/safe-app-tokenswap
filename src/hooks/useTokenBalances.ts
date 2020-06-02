@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import superagent from "superagent"
-import { API_URL } from "constants"
+import { GNOSIS_API_URL } from "constants"
 
 interface Token {
   name: string
@@ -20,7 +20,7 @@ const useTokenBalances = (safeAddress?: string) => {
 
   useEffect(() => {
     const fetchTokenBalances = async () => {
-      const res = await superagent.get(`${API_URL}safes/${safeAddress}/balances`)
+      const res = await superagent.get(`${GNOSIS_API_URL}/safes/${safeAddress}/balances`)
 
       setTokenBalances(res.body)
     }
