@@ -4,6 +4,7 @@ import FormControl from "@material-ui/core/FormControl"
 import ListItemIcon from "@material-ui/core/ListItemIcon"
 import ListItemText from "@material-ui/core/ListItemText"
 import SelectMUI from "@material-ui/core/Select"
+import TokenIcon from "./TokenIcon"
 
 type Props = {
   items: Array<{ id: string; label: string; iconUrl?: string }>
@@ -29,11 +30,19 @@ const TokenSelect: React.FC<Props> = ({ items, activeItemId, onItemClick }) => {
 
   return (
     <FormControl>
-      <SelectMUI open={open} onClose={handleClose} onOpen={handleOpen} value={activeItemId} onChange={handleChange}>
+      <SelectMUI
+        open={open}
+        onClose={handleClose}
+        onOpen={handleOpen}
+        value={activeItemId}
+        onChange={handleChange}
+      >
         {items.map((i) => (
           <MenuItem value={i.id} key={i.id}>
-            {i.iconUrl && <img alt={i.label} src={i.iconUrl} />}
-            <span>{i.label}</span>
+            <ListItemIcon>
+              <TokenIcon tokenName={i.label} address={i.id} />
+            </ListItemIcon>
+            <ListItemText primary={i.label} />
           </MenuItem>
         ))}
       </SelectMUI>
@@ -41,4 +50,4 @@ const TokenSelect: React.FC<Props> = ({ items, activeItemId, onItemClick }) => {
   )
 }
 
-export default Select
+export default TokenSelect

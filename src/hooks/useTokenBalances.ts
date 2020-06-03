@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import superagent from "superagent"
-import { GNOSIS_API_URL } from "constants"
+import { GNOSIS_API_URL } from "utils/constants"
 
 interface Token {
   name: string

@@ -21,3 +21,4 @@ const KYBERSWAP_API_URL = getKyberSwapApiUrl()
 const GNOSIS_TOKEN_LOGOS_URL = "https://gnosis-safe-token-logos.s3.amazonaws.com"
 
 export { GNOSIS_API_URL, KYBERSWAP_API_URL, GNOSIS_TOKEN_LOGOS_URL }
+export * from "./tokens"

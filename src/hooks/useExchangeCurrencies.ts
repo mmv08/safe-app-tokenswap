@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import superagent from "superagent"
-import { KYBERSWAP_API_URL } from "constants"
+import { KYBERSWAP_API_URL } from "utils/constants"
 
 interface Currency {
   name: string
