@@ -3,10 +3,11 @@ import styled from "styled-components"
 import { SafeInfo } from "@gnosis.pm/safe-apps-sdk"
 import Button from "@material-ui/core/Button"
 import Layout from "components/Layout"
-import TokenSelect from "components/TokenSelect2"
+import TokenSelect from "components/TokenSelect"
 import { appsSdk } from "gnosisAppsSdk"
 import { useTokenBalances } from "hooks/useTokenBalances"
 import { useExchangeCurrencies } from "hooks/useExchangeCurrencies"
+import { fromWeiToDisplayAmount } from "utils/formatters"
 
 const TokenSwapContainer = styled.div`
   display: flex;
@@ -29,6 +30,7 @@ const IndexPage: React.FC = () => {
       tokenBalances.map((token) => ({
         id: token.tokenAddress || "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
         label: token.token?.symbol || "ETH",
+        balance: fromWeiToDisplayAmount(token.balance),
       })),
     [tokenBalances],
   )
@@ -56,13 +58,13 @@ const IndexPage: React.FC = () => {
         <p>{JSON.stringify(safeInfo, null, 2)}</p>
         <TokenSwapContainer>
           <TokenSelect
-            items={tokenOptions}
+            tokens={tokenOptions}
             activeItemId={selectedToken}
             onItemClick={(id) => setSelectedToken(id)}
           />
           <SwapImg src="/swap_horiz.svg" alt="Swap icon" />
           <TokenSelect
-            items={currenciesOptions}
+            tokens={currenciesOptions}
             activeItemId={selectedCurrency}
             onItemClick={(id) => setSelectedCurrency(id)}
           />
