@@ -30,7 +30,7 @@ const IndexPage: React.FC = () => {
       tokenBalances.map((token) => ({
         id: token.tokenAddress || "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
         label: token.token?.symbol || "ETH",
-        balance: fromWeiToDisplayAmount(token.balance),
+        balance: fromWeiToDisplayAmount(token.balance, token.decimals),
       })),
     [tokenBalances],
   )

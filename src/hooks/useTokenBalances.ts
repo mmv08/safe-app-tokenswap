@@ -15,7 +15,7 @@ interface TokenBalance {
   token: Token | null
 }
 
-const useTokenBalances = (safeAddress?: string) => {
+const useTokenBalances = (safeAddress?: string): { tokenBalances: TokenBalance[] } => {
   const [tokenBalances, setTokenBalances] = useState<TokenBalance[]>([])
 
   useEffect(() => {

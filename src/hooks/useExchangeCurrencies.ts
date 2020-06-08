@@ -12,7 +12,7 @@ interface Currency {
   reserves_dest?: string[]
 }
 
-const useExchangeCurrencies = () => {
+const useExchangeCurrencies = (): { currencies: Currency[] } => {
   const [currencies, setCurrencies] = useState<Currency[]>([])
 
   useEffect(() => {
