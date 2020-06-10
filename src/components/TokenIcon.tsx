@@ -37,6 +37,7 @@ const TokenIcon: React.FC<Props> = ({ size = 20, tokenName, address }) => {
         size={size}
         alt={tokenName}
         onLoad={() => setImageLoaded(true)}
+        onError={() => setImageLoaded(false)}
         hidden={!imageLoaded}
       />
       <Image src={TokenPlaceholder} size={size} alt={tokenName} hidden={imageLoaded} />

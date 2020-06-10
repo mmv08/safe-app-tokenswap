@@ -3,9 +3,7 @@ import { VariableSizeList, ListChildComponentProps } from "react-window"
 import MenuItem from "@material-ui/core/MenuItem"
 import TextField from "@material-ui/core/TextField"
 import Autocomplete, { AutocompleteRenderGroupParams } from "@material-ui/lab/Autocomplete"
-import useMediaQuery from "@material-ui/core/useMediaQuery"
 import ListSubheader from "@material-ui/core/ListSubheader"
-import { useTheme } from "@material-ui/core/styles"
 import ListItemIcon from "@material-ui/core/ListItemIcon"
 import ListItemText from "@material-ui/core/ListItemText"
 import TokenIcon from "./TokenIcon"
@@ -43,10 +41,8 @@ function useResetCache(data: any) {
 const ListboxComponent = React.forwardRef<HTMLDivElement>(function ListboxComponent(props, ref) {
   const { children, ...other } = props
   const itemData = React.Children.toArray(children)
-  const theme = useTheme()
-  const smUp = useMediaQuery(theme.breakpoints.up("sm"), { noSsr: true })
   const itemCount = itemData.length
-  const itemSize = smUp ? 36 : 48
+  const itemSize = 48
 
   const getChildSize = (child: React.ReactNode) => {
     if (React.isValidElement(child) && child.type === ListSubheader) {
@@ -64,13 +60,13 @@ const ListboxComponent = React.forwardRef<HTMLDivElement>(function ListboxCompon
   }
 
   const gridRef = useResetCache(itemCount)
-
+  console.log({ height: getHeight() + 2 * LISTBOX_PADDING })
   return (
     <div ref={ref}>
       <OuterElementContext.Provider value={other}>
         <VariableSizeList
           itemData={itemData}
-          height={getHeight() + 2 * LISTBOX_PADDING}
+          height={getHeight()}
           width="100%"
           ref={gridRef}
           outerElementType={OuterElementType}
@@ -112,6 +108,8 @@ interface Props {
 const TokenSelect: React.FC<Props> = ({ tokens }) => {
   return (
     <Autocomplete
+      open
+      openOnFocus
       style={{ width: 300 }}
       disableListWrap
       ListboxComponent={ListboxComponent as React.ComponentType<React.HTMLAttributes<HTMLElement>>}
