@@ -3,11 +3,12 @@ import styled from "styled-components"
 import { SafeInfo } from "@gnosis.pm/safe-apps-sdk"
 import Button from "@material-ui/core/Button"
 import Layout from "components/Layout"
-import TokenSelect from "components/TokenSelect"
+import TokenSelect, { TokenProps } from "components/TokenSelect"
 import { appsSdk } from "gnosisAppsSdk"
 import { useTokenBalances } from "hooks/useTokenBalances"
 import { useExchangeCurrencies } from "hooks/useExchangeCurrencies"
 import { fromWeiToDisplayAmount } from "utils/formatters"
+import { ETHER_ADDRESS } from "utils/constants"
 
 const TokenSwapContainer = styled.div`
   display: flex;
@@ -18,19 +19,27 @@ const SwapImg = styled.img`
   margin: 0 15px;
 `
 
+const GNO_ADDRESS = "0x6810e776880c02933d47db1b9fc05908e5386b96" as const
+
 const IndexPage: React.FC = () => {
   const [safeInfo, setSafeInfo] = React.useState<SafeInfo>()
-  const [selectedToken, setSelectedToken] = React.useState("")
-  const [selectedCurrency, setSelectedCurrency] = React.useState("")
-
+  const [selectedToken, setSelectedToken] = React.useState<TokenProps | null>({
+    id: ETHER_ADDRESS,
+    label: "ETH",
+  })
+  const [selectedCurrency, setSelectedCurrency] = React.useState<TokenProps | null>({
+    id: GNO_ADDRESS,
+    label: "GNO",
+  })
+  console.log({ selectedToken, selectedCurrency })
   const { tokenBalances } = useTokenBalances(safeInfo?.safeAddress)
   const { currencies } = useExchangeCurrencies()
   const tokenOptions = React.useMemo(
     () =>
-      tokenBalances.map((token) => ({
-        id: token.tokenAddress || "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-        label: token.token?.symbol || "ETH",
-        balance: fromWeiToDisplayAmount(token.balance, token.decimals),
+      tokenBalances.map((balance) => ({
+        id: balance.tokenAddress || ETHER_ADDRESS,
+        label: balance.token?.symbol || "ETH",
+        balance: fromWeiToDisplayAmount(balance.balance, balance.token?.decimals ?? 18),
       })),
     [tokenBalances],
   )
@@ -59,17 +68,21 @@ const IndexPage: React.FC = () => {
         <TokenSwapContainer>
           <TokenSelect
             tokens={tokenOptions}
-            activeItemId={selectedToken}
-            onItemClick={(id) => setSelectedToken(id)}
+            activeItem={selectedToken}
+            onItemClick={(_: React.ChangeEvent<unknown>, token: TokenProps | null): void =>
+              setSelectedToken(token)
+            }
           />
           <SwapImg src="/swap_horiz.svg" alt="Swap icon" />
           <TokenSelect
             tokens={currenciesOptions}
-            activeItemId={selectedCurrency}
-            onItemClick={(id) => setSelectedCurrency(id)}
+            activeItem={selectedCurrency}
+            onItemClick={(_: React.ChangeEvent<unknown>, token: TokenProps | null): void =>
+              setSelectedCurrency(token)
+            }
           />
         </TokenSwapContainer>
-        <div>
+        <div style={{ marginTop: 20 }}>
           <Button variant="contained" color="primary">
             Swap
           </Button>

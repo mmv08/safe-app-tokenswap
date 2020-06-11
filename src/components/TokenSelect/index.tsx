@@ -1,12 +1,11 @@
 import * as React from "react"
 import { VariableSizeList, ListChildComponentProps } from "react-window"
-import MenuItem from "@material-ui/core/MenuItem"
-import TextField from "@material-ui/core/TextField"
 import Autocomplete, { AutocompleteRenderGroupParams } from "@material-ui/lab/Autocomplete"
 import ListSubheader from "@material-ui/core/ListSubheader"
 import ListItemIcon from "@material-ui/core/ListItemIcon"
 import ListItemText from "@material-ui/core/ListItemText"
-import TokenIcon from "./TokenIcon"
+import TokenInput from "./TokenInput"
+import TokenIcon from "../TokenIcon"
 
 const LISTBOX_PADDING = 8 // px
 
@@ -67,13 +66,14 @@ const ListboxComponent = React.forwardRef<HTMLDivElement>(function ListboxCompon
         <VariableSizeList
           itemData={itemData}
           height={getHeight()}
-          width="100%"
           ref={gridRef}
           outerElementType={OuterElementType}
           innerElementType="ul"
           itemSize={(index) => getChildSize(itemData[index])}
-          overscanCount={5}
+          overscanCount={10}
+          width="100%"
           itemCount={itemCount}
+          style={{ padding: 0 }}
         >
           {renderRow}
         </VariableSizeList>
@@ -94,41 +94,40 @@ interface ItemProps {
   label: string
 }
 
-interface TokenProps extends ItemProps {
+export interface TokenProps extends ItemProps {
   balance?: string
 }
 
 interface Props {
   tokens: Array<TokenProps>
-  activeItemId: string
-  onItemClick: (id: string) => void
+  activeItem: TokenProps | null
+  onItemClick: (e: React.ChangeEvent<unknown>, id: TokenProps | null) => void
   id?: string
 }
 
-const TokenSelect: React.FC<Props> = ({ tokens }) => {
-  return (
-    <Autocomplete
-      open
-      openOnFocus
-      style={{ width: 300 }}
-      disableListWrap
-      ListboxComponent={ListboxComponent as React.ComponentType<React.HTMLAttributes<HTMLElement>>}
-      renderGroup={renderGroup}
-      getOptionLabel={(option) => option.label}
-      options={tokens}
-      renderInput={(params) => (
-        <TextField {...params} variant="outlined" label="Enter token name or symbol" />
-      )}
-      renderOption={(option) => (
-        <>
-          <ListItemIcon>
-            <TokenIcon tokenName={option.label} address={option.id} />
-          </ListItemIcon>
-          <ListItemText primary={option.label} secondary={option.balance || ""} />
-        </>
-      )}
-    />
-  )
-}
+const TokenSelect: React.FC<Props> = ({ tokens, activeItem, onItemClick }) => (
+  <Autocomplete
+    openOnFocus
+    value={activeItem}
+    onChange={onItemClick}
+    style={{ width: 300 }}
+    disableListWrap
+    noOptionsText="There are no tokens available"
+    ListboxComponent={ListboxComponent as React.ComponentType<React.HTMLAttributes<HTMLElement>>}
+    renderGroup={renderGroup}
+    getOptionLabel={(option: TokenProps): string => option.label || ""}
+    getOptionSelected={(option: TokenProps, value: TokenProps): boolean => option.id === value.id}
+    options={tokens}
+    renderInput={(params) => <TokenInput params={params} activeItem={activeItem} />}
+    renderOption={(option) => (
+      <>
+        <ListItemIcon>
+          <TokenIcon size={24} tokenName={option.label} address={option.id} />
+        </ListItemIcon>
+        <ListItemText primary={option.label} secondary={option.balance || ""} />
+      </>
+    )}
+  />
+)
 
 export default TokenSelect

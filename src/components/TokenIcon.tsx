@@ -23,7 +23,7 @@ const Image = styled.img<{ size: number; hidden: boolean }>`
 `
 
 const TokenIcon: React.FC<Props> = ({ size = 20, tokenName, address }) => {
-  const [imageLoaded, setImageLoaded] = React.useState(false)
+  const [imageLoaded, setImageLoaded] = React.useState(address === ETHER_ADDRESS)
 
   let tokenIconSrc = `${GNOSIS_TOKEN_LOGOS_URL}/${toChecksummedAddress(address)}.png`
   if (address === ETHER_ADDRESS) {
