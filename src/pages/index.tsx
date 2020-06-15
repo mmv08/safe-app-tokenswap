@@ -60,6 +60,8 @@ const IndexPage: React.FC = () => {
     }
   }, [])
 
+  console.log(currencies.length)
+
   return (
     <Layout title="Tokenswap">
       <div>

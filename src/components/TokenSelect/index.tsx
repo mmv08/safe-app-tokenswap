@@ -1,11 +1,22 @@
 import * as React from "react"
+import { makeStyles } from "@material-ui/core/styles"
 import { VariableSizeList, ListChildComponentProps } from "react-window"
-import Autocomplete, { AutocompleteRenderGroupParams } from "@material-ui/lab/Autocomplete"
+import Autocomplete from "@material-ui/lab/Autocomplete"
 import ListSubheader from "@material-ui/core/ListSubheader"
 import ListItemIcon from "@material-ui/core/ListItemIcon"
 import ListItemText from "@material-ui/core/ListItemText"
 import TokenInput from "./TokenInput"
 import TokenIcon from "../TokenIcon"
+
+const useStyles = makeStyles({
+  listbox: {
+    boxSizing: "border-box",
+    "& ul": {
+      padding: 0,
+      margin: 0,
+    },
+  },
+})
 
 const LISTBOX_PADDING = 8 // px
 
@@ -52,28 +63,27 @@ const ListboxComponent = React.forwardRef<HTMLDivElement>(function ListboxCompon
   }
 
   const getHeight = () => {
-    if (itemCount > 8) {
-      return 8 * itemSize
+    if (itemCount > 4) {
+      return 4 * itemSize
     }
     return itemData.map(getChildSize).reduce((a, b) => a + b, 0)
   }
 
   const gridRef = useResetCache(itemCount)
-  console.log({ height: getHeight() + 2 * LISTBOX_PADDING })
+
   return (
     <div ref={ref}>
       <OuterElementContext.Provider value={other}>
         <VariableSizeList
           itemData={itemData}
-          height={getHeight()}
+          height={getHeight() + 2 * LISTBOX_PADDING}
           ref={gridRef}
           outerElementType={OuterElementType}
           innerElementType="ul"
           itemSize={(index) => getChildSize(itemData[index])}
-          overscanCount={10}
+          overscanCount={8}
           width="100%"
           itemCount={itemCount}
-          style={{ padding: 0 }}
         >
           {renderRow}
         </VariableSizeList>
@@ -81,13 +91,6 @@ const ListboxComponent = React.forwardRef<HTMLDivElement>(function ListboxCompon
     </div>
   )
 })
-
-const renderGroup = (params: AutocompleteRenderGroupParams) => [
-  <ListSubheader key={params.key} component="div">
-    {params.group}
-  </ListSubheader>,
-  params.children,
-]
 
 interface ItemProps {
   id: string
@@ -105,29 +108,34 @@ interface Props {
   id?: string
 }
 
-const TokenSelect: React.FC<Props> = ({ tokens, activeItem, onItemClick }) => (
-  <Autocomplete
-    openOnFocus
-    value={activeItem}
-    onChange={onItemClick}
-    style={{ width: 300 }}
-    disableListWrap
-    noOptionsText="There are no tokens available"
-    ListboxComponent={ListboxComponent as React.ComponentType<React.HTMLAttributes<HTMLElement>>}
-    renderGroup={renderGroup}
-    getOptionLabel={(option: TokenProps): string => option.label || ""}
-    getOptionSelected={(option: TokenProps, value: TokenProps): boolean => option.id === value.id}
-    options={tokens}
-    renderInput={(params) => <TokenInput params={params} activeItem={activeItem} />}
-    renderOption={(option) => (
-      <>
-        <ListItemIcon>
-          <TokenIcon size={24} tokenName={option.label} address={option.id} />
-        </ListItemIcon>
-        <ListItemText primary={option.label} secondary={option.balance || ""} />
-      </>
-    )}
-  />
-)
+const TokenSelect: React.FC<Props> = ({ tokens, activeItem, onItemClick }) => {
+  const classes = useStyles()
+
+  return (
+    <Autocomplete
+      open
+      openOnFocus
+      value={activeItem}
+      onChange={onItemClick}
+      style={{ width: 300 }}
+      disableListWrap
+      classes={classes}
+      noOptionsText="There are no tokens available"
+      ListboxComponent={ListboxComponent as React.ComponentType<React.HTMLAttributes<HTMLElement>>}
+      getOptionLabel={(option: TokenProps): string => option.label || ""}
+      getOptionSelected={(option: TokenProps, value: TokenProps): boolean => option.id === value.id}
+      options={tokens}
+      renderInput={(params) => <TokenInput params={params} activeItem={activeItem} />}
+      renderOption={(option) => (
+        <>
+          <ListItemIcon>
+            <TokenIcon size={24} tokenName={option.label} address={option.id} />
+          </ListItemIcon>
+          <ListItemText primary={option.label} secondary={option.balance || ""} />
+        </>
+      )}
+    />
+  )
+}
 
 export default TokenSelect

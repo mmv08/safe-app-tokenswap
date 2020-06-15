@@ -14,6 +14,11 @@ const GlobalStyle = createGlobalStyle`
        font-family: 'Averta';
     }
 
+    ul {
+      padding: 0;
+      margin: 0;
+    }
+
     #root {
         height: 100%;
     }
