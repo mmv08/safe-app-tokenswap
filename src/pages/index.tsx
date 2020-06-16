@@ -35,13 +35,13 @@ const IndexPage: React.FC = () => {
   })
   const [tokenAmount, setTokenAmount] = React.useState("")
   const [currencyAmount, setCurrencyAmount] = React.useState("")
-  const { srcQty } = useExchangeRate(
+  const { srcQty, destQty } = useExchangeRate(
     selectedToken?.id,
     tokenAmount,
     selectedCurrency?.id,
     currencyAmount,
   )
-  console.log(srcQty)
+
   const { tokenBalances } = useTokenBalances(safeInfo?.safeAddress)
   const { currencies } = useExchangeCurrencies()
   const tokenOptions = React.useMemo(
@@ -94,14 +94,14 @@ const IndexPage: React.FC = () => {
         </TokenSwapContainer>
         <TokenSwapContainer>
           <Input
-            value={tokenAmount}
+            value={srcQty}
             onChange={(e: React.SyntheticEvent<HTMLInputElement>) =>
               setTokenAmount(e.currentTarget.value)
             }
           />
           =
           <Input
-            value={currencyAmount}
+            value={destQty}
             onChange={(e: React.SyntheticEvent<HTMLInputElement>) =>
               setCurrencyAmount(e.currentTarget.value)
             }
