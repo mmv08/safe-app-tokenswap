@@ -3,10 +3,12 @@ import styled from "styled-components"
 import { SafeInfo } from "@gnosis.pm/safe-apps-sdk"
 import Button from "@material-ui/core/Button"
 import Layout from "components/Layout"
+import Input from "components/Input"
 import TokenSelect, { TokenProps } from "components/TokenSelect"
 import { appsSdk } from "gnosisAppsSdk"
 import { useTokenBalances } from "hooks/useTokenBalances"
 import { useExchangeCurrencies } from "hooks/useExchangeCurrencies"
+import { useExchangeRate } from "hooks/useExchangeRate"
 import { fromWeiToDisplayAmount } from "utils/formatters"
 import { ETHER_ADDRESS } from "utils/constants"
 
@@ -31,7 +33,15 @@ const IndexPage: React.FC = () => {
     id: GNO_ADDRESS,
     label: "GNO",
   })
-
+  const [tokenAmount, setTokenAmount] = React.useState("")
+  const [currencyAmount, setCurrencyAmount] = React.useState("")
+  const { srcQty } = useExchangeRate(
+    selectedToken?.id,
+    tokenAmount,
+    selectedCurrency?.id,
+    currencyAmount,
+  )
+  console.log(srcQty)
   const { tokenBalances } = useTokenBalances(safeInfo?.safeAddress)
   const { currencies } = useExchangeCurrencies()
   const tokenOptions = React.useMemo(
@@ -63,7 +73,7 @@ const IndexPage: React.FC = () => {
   return (
     <Layout title="Tokenswap">
       <div>
-        <h1>Exchange</h1>
+        <h1>Swap Tokens</h1>
         <p>{JSON.stringify(safeInfo, null, 2)}</p>
         <TokenSwapContainer>
           <TokenSelect
@@ -79,6 +89,21 @@ const IndexPage: React.FC = () => {
             activeItem={selectedCurrency}
             onItemClick={(_: React.ChangeEvent<unknown>, token: TokenProps | null): void =>
               setSelectedCurrency(token)
+            }
+          />
+        </TokenSwapContainer>
+        <TokenSwapContainer>
+          <Input
+            value={tokenAmount}
+            onChange={(e: React.SyntheticEvent<HTMLInputElement>) =>
+              setTokenAmount(e.currentTarget.value)
+            }
+          />
+          =
+          <Input
+            value={currencyAmount}
+            onChange={(e: React.SyntheticEvent<HTMLInputElement>) =>
+              setCurrencyAmount(e.currentTarget.value)
             }
           />
         </TokenSwapContainer>
