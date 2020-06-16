@@ -8,7 +8,7 @@ import TokenSelect, { TokenProps } from "components/TokenSelect"
 import { appsSdk } from "gnosisAppsSdk"
 import { useTokenBalances } from "hooks/useTokenBalances"
 import { useExchangeCurrencies } from "hooks/useExchangeCurrencies"
-import { useExchangeRate } from "hooks/useExchangeRate"
+import { useSwapForm } from "hooks/useSwapForm"
 import { fromWeiToDisplayAmount } from "utils/formatters"
 import { ETHER_ADDRESS } from "utils/constants"
 
@@ -33,13 +33,8 @@ const IndexPage: React.FC = () => {
     id: GNO_ADDRESS,
     label: "GNO",
   })
-  const [tokenAmount, setTokenAmount] = React.useState("")
-  const [currencyAmount, setCurrencyAmount] = React.useState("")
-  const { srcQty, destQty } = useExchangeRate(
-    selectedToken?.id,
-    tokenAmount,
+  const { destQty, ethQty, handleEthAmountInputChange, handleDestAmountInputChange } = useSwapForm(
     selectedCurrency?.id,
-    currencyAmount,
   )
 
   const { tokenBalances } = useTokenBalances(safeInfo?.safeAddress)
@@ -71,12 +66,13 @@ const IndexPage: React.FC = () => {
   }, [])
 
   return (
-    <Layout title="Tokenswap">
+    <Layout title="ETHSwap">
       <div>
-        <h1>Swap Tokens</h1>
+        <h1>ETHSwap</h1>
         <p>{JSON.stringify(safeInfo, null, 2)}</p>
         <TokenSwapContainer>
           <TokenSelect
+            disabled
             tokens={tokenOptions}
             activeItem={selectedToken}
             onItemClick={(_: React.ChangeEvent<unknown>, token: TokenProps | null): void =>
@@ -93,19 +89,9 @@ const IndexPage: React.FC = () => {
           />
         </TokenSwapContainer>
         <TokenSwapContainer>
-          <Input
-            value={srcQty}
-            onChange={(e: React.SyntheticEvent<HTMLInputElement>) =>
-              setTokenAmount(e.currentTarget.value)
-            }
-          />
+          <Input value={ethQty} onChange={handleEthAmountInputChange} />
           =
-          <Input
-            value={destQty}
-            onChange={(e: React.SyntheticEvent<HTMLInputElement>) =>
-              setCurrencyAmount(e.currentTarget.value)
-            }
-          />
+          <Input value={destQty} onChange={handleDestAmountInputChange} />
         </TokenSwapContainer>
         <div style={{ marginTop: 20 }}>
           <Button variant="contained" color="primary">

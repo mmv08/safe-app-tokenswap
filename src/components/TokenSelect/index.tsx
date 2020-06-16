@@ -106,15 +106,17 @@ interface Props {
   activeItem: TokenProps | null
   onItemClick: (e: React.ChangeEvent<unknown>, id: TokenProps | null) => void
   id?: string
+  disabled?: boolean
 }
 
-const TokenSelect: React.FC<Props> = ({ tokens, activeItem, onItemClick }) => {
+const TokenSelect: React.FC<Props> = ({ tokens, activeItem, onItemClick, disabled = false }) => {
   const classes = useStyles()
 
   return (
     <Autocomplete
       openOnFocus
       value={activeItem}
+      disabled={disabled}
       onChange={onItemClick}
       style={{ width: 300 }}
       disableListWrap
