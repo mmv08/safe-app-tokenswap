@@ -31,7 +31,7 @@ const IndexPage: React.FC = () => {
     id: GNO_ADDRESS,
     label: "GNO",
   })
-  console.log({ selectedToken, selectedCurrency })
+
   const { tokenBalances } = useTokenBalances(safeInfo?.safeAddress)
   const { currencies } = useExchangeCurrencies()
   const tokenOptions = React.useMemo(
@@ -59,8 +59,6 @@ const IndexPage: React.FC = () => {
       appsSdk.removeListeners()
     }
   }, [])
-
-  console.log(currencies.length)
 
   return (
     <Layout title="Tokenswap">

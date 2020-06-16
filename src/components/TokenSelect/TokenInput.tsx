@@ -10,22 +10,20 @@ interface Props {
   activeItem: TokenProps | null
 }
 
-const TokenInput: React.FC<Props> = ({ params, activeItem }) => {
-  return (
-    <TextField
-      {...params}
-      variant="outlined"
-      label="Enter token name or symbol"
-      InputProps={{
-        ...params.InputProps,
-        startAdornment: activeItem ? (
-          <InputAdornment position="start">
-            <TokenIcon size={24} tokenName={activeItem.label} address={activeItem.id} />
-          </InputAdornment>
-        ) : null,
-      }}
-    />
-  )
-}
+const TokenInput: React.FC<Props> = ({ params, activeItem }) => (
+  <TextField
+    {...params}
+    variant="outlined"
+    label="Enter token name or symbol"
+    InputProps={{
+      ...params.InputProps,
+      startAdornment: activeItem ? (
+        <InputAdornment position="start">
+          <TokenIcon size={24} tokenName={activeItem.label} address={activeItem.id} />
+        </InputAdornment>
+      ) : null,
+    }}
+  />
+)
 
 export default TokenInput

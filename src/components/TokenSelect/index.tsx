@@ -113,7 +113,6 @@ const TokenSelect: React.FC<Props> = ({ tokens, activeItem, onItemClick }) => {
 
   return (
     <Autocomplete
-      open
       openOnFocus
       value={activeItem}
       onChange={onItemClick}
