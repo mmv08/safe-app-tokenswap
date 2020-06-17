@@ -1,26 +1,10 @@
 import { useState, useEffect, useCallback } from "react"
-import superagent from "superagent"
-import { KYBERSWAP_API_URL } from "utils/constants"
 
 interface UseExchangeRateReturnType {
   ethQty: string
   destQty: string
   handleEthAmountInputChange: (e: React.SyntheticEvent<HTMLInputElement>) => void
   handleDestAmountInputChange: (e: React.SyntheticEvent<HTMLInputElement>) => void
-}
-
-// How much eth do you need to buy a token
-const fetchBuyRate = async (tokenId: string, tokenQty: string): Promise<string> => {
-  const res = await superagent.get(`${KYBERSWAP_API_URL}/buy_rate?id=${tokenId}&qty=${tokenQty}`)
-
-  return res.body.data[0].dst_qty[0]
-}
-
-// How much eth you will get by selling a token
-const fetchSellRate = async (tokenId: string, tokenQty: string): Promise<string> => {
-  const res = await superagent.get(`${KYBERSWAP_API_URL}/sell_rate?id=${tokenId}&qty=${tokenQty}`)
-
-  return res.body.data[0].src_qty[0]
 }
 
 const useSwapForm = (destId: string | undefined): UseExchangeRateReturnType => {
