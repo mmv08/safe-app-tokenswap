@@ -41,7 +41,8 @@ const IndexPage: React.FC = () => {
     handleSrcAmountInputChange,
     handleDestAmountInputChange,
     rate,
-  } = useSwapForm(srcToken?.id, destToken?.id, destToken?.decimals)
+    handleTrade,
+  } = useSwapForm(srcToken?.id, destToken?.id, destToken?.decimals, safeInfo?.safeAddress)
 
   const { tokenBalances } = useTokenBalances(safeInfo?.safeAddress)
   const { tokens: exchangeTokens } = useExchangeTokens()
@@ -109,7 +110,7 @@ const IndexPage: React.FC = () => {
           )}
         </div>
         <div style={{ marginTop: 20 }}>
-          <Button variant="contained" color="primary">
+          <Button variant="contained" color="primary" onClick={handleTrade}>
             Swap
           </Button>
         </div>

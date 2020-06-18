@@ -8,6 +8,7 @@ interface UseExchangeRateReturnType {
   handleSrcAmountInputChange: (e: React.SyntheticEvent<HTMLInputElement>) => void
   handleDestAmountInputChange: (e: React.SyntheticEvent<HTMLInputElement>) => void
   rate: string
+  handleTrade: () => void
 }
 
 const MAX_ALLOWANCE =
@@ -62,8 +63,16 @@ const useSwapForm = (
   )
 
   const handleTrade = useCallback(() => {
-    trade(srcId, srcQty * 10 ** 18, destId, safeAddress, MAX_ALLOWANCE, slippageRate, NULL_ADDRESS)
-  }, [])
+    trade(
+      srcId,
+      (srcQty * 10 ** 18).toString(),
+      destId,
+      safeAddress,
+      MAX_ALLOWANCE,
+      slippageRate,
+      NULL_ADDRESS,
+    )
+  }, [srcId, srcQty, safeAddress, destId, slippageRate])
 
   useEffect(() => {
     setSrcQty("0")

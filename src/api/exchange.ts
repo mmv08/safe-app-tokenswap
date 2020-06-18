@@ -25,7 +25,7 @@ const getRates = async (
   }
 }
 
-const trade = async (
+const trade = (
   srcTokenAddress: string,
   srcQtyWei: string,
   dstTokenAddress: string,
@@ -33,8 +33,8 @@ const trade = async (
   maxDstAmount: string,
   minConversionRate: string,
   walletId: string,
-): Promise<void> => {
-  const txData = await kyberProxy.interface.encodeFunctionData("trade", [
+): void => {
+  const txData = kyberProxy.interface.encodeFunctionData("trade", [
     srcTokenAddress,
     srcQtyWei,
     dstTokenAddress,
