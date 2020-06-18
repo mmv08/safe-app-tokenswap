@@ -7,7 +7,7 @@ import Input from "components/Input"
 import TokenSelect, { TokenProps } from "components/TokenSelect"
 import { appsSdk } from "gnosisAppsSdk"
 import { useTokenBalances } from "hooks/useTokenBalances"
-import { useExchangeCurrencies } from "hooks/useExchangeCurrencies"
+import { useExchangeTokens } from "hooks/useExchangeTokens"
 import { useSwapForm } from "hooks/useSwapForm"
 import { fromWeiToDisplayAmount } from "utils/formatters"
 import { ETHER_ADDRESS } from "utils/constants"
@@ -25,36 +25,44 @@ const GNO_ADDRESS = "0x6810e776880c02933d47db1b9fc05908e5386b96" as const
 
 const IndexPage: React.FC = () => {
   const [safeInfo, setSafeInfo] = React.useState<SafeInfo>()
-  const [selectedToken, setSelectedToken] = React.useState<TokenProps | null>({
+  const [srcToken, setSrcToken] = React.useState<TokenProps | null>({
     id: ETHER_ADDRESS,
     label: "ETH",
+    decimals: 18,
   })
-  const [selectedCurrency, setSelectedCurrency] = React.useState<TokenProps | null>({
+  const [destToken, setDestToken] = React.useState<TokenProps | null>({
     id: GNO_ADDRESS,
     label: "GNO",
+    decimals: 18,
   })
-  const { destQty, ethQty, handleEthAmountInputChange, handleDestAmountInputChange } = useSwapForm(
-    selectedCurrency?.id,
-  )
+  const {
+    destQty,
+    srcQty,
+    handleSrcAmountInputChange,
+    handleDestAmountInputChange,
+    rate,
+  } = useSwapForm(srcToken?.id, destToken?.id, destToken?.decimals)
 
   const { tokenBalances } = useTokenBalances(safeInfo?.safeAddress)
-  const { currencies } = useExchangeCurrencies()
+  const { tokens: exchangeTokens } = useExchangeTokens()
   const tokenOptions = React.useMemo(
     () =>
       tokenBalances.map((balance) => ({
         id: balance.tokenAddress || ETHER_ADDRESS,
         label: balance.token?.symbol || "ETH",
         balance: fromWeiToDisplayAmount(balance.balance, balance.token?.decimals ?? 18),
+        decimals: balance.token?.decimals ?? 18,
       })),
     [tokenBalances],
   )
-  const currenciesOptions = React.useMemo(
+  const exchangeTokensOptions = React.useMemo(
     () =>
-      currencies.map((currency) => ({
-        id: currency.address,
-        label: currency.symbol,
+      exchangeTokens.map((exchangeToken) => ({
+        id: exchangeToken.address,
+        label: exchangeToken.symbol,
+        decimals: exchangeToken.decimals,
       })),
-    [currencies],
+    [exchangeTokens],
   )
 
   React.useEffect(() => {
@@ -74,25 +82,32 @@ const IndexPage: React.FC = () => {
           <TokenSelect
             disabled
             tokens={tokenOptions}
-            activeItem={selectedToken}
+            activeItem={srcToken}
             onItemClick={(_: React.ChangeEvent<unknown>, token: TokenProps | null): void =>
-              setSelectedToken(token)
+              setSrcToken(token)
             }
           />
           <SwapImg src="/swap_horiz.svg" alt="Swap icon" />
           <TokenSelect
-            tokens={currenciesOptions}
-            activeItem={selectedCurrency}
+            tokens={exchangeTokensOptions}
+            activeItem={destToken}
             onItemClick={(_: React.ChangeEvent<unknown>, token: TokenProps | null): void =>
-              setSelectedCurrency(token)
+              setDestToken(token)
             }
           />
         </TokenSwapContainer>
         <TokenSwapContainer>
-          <Input value={ethQty} onChange={handleEthAmountInputChange} />
+          <Input value={srcQty} onChange={handleSrcAmountInputChange} />
           =
           <Input value={destQty} onChange={handleDestAmountInputChange} />
         </TokenSwapContainer>
+        <div>
+          {srcToken && destToken && (
+            <p>
+              1 {srcToken.label} = {rate} {destToken.label}
+            </p>
+          )}
+        </div>
         <div style={{ marginTop: 20 }}>
           <Button variant="contained" color="primary">
             Swap

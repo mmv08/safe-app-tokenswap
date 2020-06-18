@@ -49,10 +49,13 @@ const formatToDisplayAmount = (number: string): string => {
   return formattedNumber
 }
 
+const formatFromEtherToWei = (number: string, decimals = 18): string =>
+  utils.formatUnits(number, decimals)
+
 const formatFromWeiToEther = (number: string, decimals = 18): string =>
   utils.formatUnits(number, decimals)
 
 const fromWeiToDisplayAmount = (number: string, decimals = 18): string =>
   formatToDisplayAmount(formatFromWeiToEther(number, decimals))
 
-export { formatToDisplayAmount, formatFromWeiToEther, fromWeiToDisplayAmount }
+export { formatToDisplayAmount, formatFromWeiToEther, fromWeiToDisplayAmount, formatFromEtherToWei }

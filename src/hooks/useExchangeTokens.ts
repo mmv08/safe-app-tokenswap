@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import superagent from "superagent"
 import { KYBERSWAP_API_URL } from "utils/constants"
 
-interface Currency {
+interface ExchangeToken {
   name: string
   decimals: number
   address: string
@@ -12,20 +12,20 @@ interface Currency {
   reserves_dest?: string[]
 }
 
-const useExchangeCurrencies = (): { currencies: Currency[] } => {
-  const [currencies, setCurrencies] = useState<Currency[]>([])
+const useExchangeTokens = (): { tokens: ExchangeToken[] } => {
+  const [tokens, setTokens] = useState<ExchangeToken[]>([])
 
   useEffect(() => {
-    const fetchTokenBalances = async () => {
+    const fetchExchangeTokens = async () => {
       const res = await superagent.get(`${KYBERSWAP_API_URL}/currencies`)
 
-      setCurrencies(res.body.data)
+      setTokens(res.body.data)
     }
 
-    fetchTokenBalances()
+    fetchExchangeTokens()
   }, [])
 
-  return { currencies }
+  return { tokens }
 }
 
-export { useExchangeCurrencies }
+export { useExchangeTokens }

@@ -1,31 +1,54 @@
 import { useState, useEffect, useCallback } from "react"
+import { getRates, trade } from "api/exchange"
+import { NULL_ADDRESS } from "utils/addresses"
 
 interface UseExchangeRateReturnType {
-  ethQty: string
+  srcQty: string
   destQty: string
-  handleEthAmountInputChange: (e: React.SyntheticEvent<HTMLInputElement>) => void
+  handleSrcAmountInputChange: (e: React.SyntheticEvent<HTMLInputElement>) => void
   handleDestAmountInputChange: (e: React.SyntheticEvent<HTMLInputElement>) => void
+  rate: string
 }
 
-const useSwapForm = (destId: string | undefined): UseExchangeRateReturnType => {
-  const [ethQty, setEthQty] = useState("")
-  const [destQty, setDestQty] = useState("")
+const MAX_ALLOWANCE =
+  "115792089237316195423570985008687907853269984665640564039457584007913129639935"
 
-  const handleEthAmountInputChange = useCallback(
+const useSwapForm = (
+  srcId: string | undefined,
+  destId: string | undefined,
+  destDecimals: number | undefined,
+  safeAddress: string,
+): UseExchangeRateReturnType => {
+  const [srcQty, setSrcQty] = useState("")
+  const [destQty, setDestQty] = useState("")
+  const [rate, setRate] = useState("") // 1 src to dest
+  const [slippageRate, setSlippageRate] = useState("")
+
+  useEffect(() => {
+    const fetchRates = async () => {
+      const { expectedRate, slippageRate } = await getRates(
+        srcId as string,
+        destId as string,
+        (10 ** (destDecimals || 18)).toString(),
+      )
+
+      setRate((parseFloat(expectedRate) / 10 ** (destDecimals || 18)).toString())
+      setSlippageRate(expectedRate.toString())
+    }
+
+    if (srcId && destId) {
+      fetchRates()
+    }
+  }, [srcId, destId, destDecimals])
+
+  const handleSrcAmountInputChange = useCallback(
     async (e: React.SyntheticEvent<HTMLInputElement>) => {
       const { value } = e.currentTarget
 
-      setEthQty(value)
-
-      if (parseFloat(value) <= 0 || value === "") {
-        setDestQty(value)
-      } else {
-        const sellRate = await fetchSellRate(destId, value)
-
-        setDestQty(sellRate)
-      }
+      setSrcQty(value)
+      setDestQty(value * rate)
     },
-    [destId],
+    [rate],
   )
 
   const handleDestAmountInputChange = useCallback(
@@ -33,24 +56,28 @@ const useSwapForm = (destId: string | undefined): UseExchangeRateReturnType => {
       const { value } = e.currentTarget
 
       setDestQty(value)
-
-      if (parseFloat(value) <= 0 || value === "") {
-        setEthQty(value)
-      } else {
-        const buyRate = await fetchBuyRate(destId, value)
-
-        setEthQty(buyRate)
-      }
+      setSrcQty(value / rate)
     },
-    [destId],
+    [rate],
   )
 
+  const handleTrade = useCallback(() => {
+    trade(srcId, srcQty * 10 ** 18, destId, safeAddress, MAX_ALLOWANCE, slippageRate, NULL_ADDRESS)
+  }, [])
+
   useEffect(() => {
-    setEthQty("0")
+    setSrcQty("0")
     setDestQty("0")
   }, [destId])
 
-  return { ethQty, destQty, handleEthAmountInputChange, handleDestAmountInputChange }
+  return {
+    srcQty,
+    destQty,
+    handleSrcAmountInputChange,
+    handleDestAmountInputChange,
+    rate,
+    handleTrade,
+  }
 }
 
 export { useSwapForm }

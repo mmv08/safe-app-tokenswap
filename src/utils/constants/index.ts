@@ -14,8 +14,9 @@ const getGnosisApiUrl = (): string => {
 
 const GNOSIS_API_URL = getGnosisApiUrl()
 const GNOSIS_TOKEN_LOGOS_URL = "https://gnosis-safe-token-logos.s3.amazonaws.com"
+const KYBERSWAP_API_URL = "https://api.kyber.network"
 
-export { GNOSIS_API_URL, GNOSIS_TOKEN_LOGOS_URL }
+export { GNOSIS_API_URL, GNOSIS_TOKEN_LOGOS_URL, KYBERSWAP_API_URL }
 export * from "./tokens"
 export * from "./abi"
 export * from "./contractAddresses"

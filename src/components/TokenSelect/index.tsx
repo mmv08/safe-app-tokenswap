@@ -99,6 +99,7 @@ interface ItemProps {
 
 export interface TokenProps extends ItemProps {
   balance?: string
+  decimals?: number
 }
 
 interface Props {
