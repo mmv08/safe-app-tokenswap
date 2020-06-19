@@ -42,7 +42,13 @@ const IndexPage: React.FC = () => {
     handleDestAmountInputChange,
     rate,
     handleTrade,
-  } = useSwapForm(srcToken?.id, destToken?.id, destToken?.decimals, safeInfo?.safeAddress)
+  } = useSwapForm(
+    srcToken?.id,
+    srcToken?.decimals,
+    destToken?.id,
+    destToken?.decimals,
+    safeInfo?.safeAddress,
+  )
 
   const { tokenBalances } = useTokenBalances(safeInfo?.safeAddress)
   const { tokens: exchangeTokens } = useExchangeTokens()

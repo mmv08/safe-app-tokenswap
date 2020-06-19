@@ -50,7 +50,7 @@ const formatToDisplayAmount = (number: string): string => {
 }
 
 const formatFromEtherToWei = (number: string, decimals = 18): string =>
-  utils.formatUnits(number, decimals)
+  utils.parseUnits(number, decimals).toString()
 
 const formatFromWeiToEther = (number: string, decimals = 18): string =>
   utils.formatUnits(number, decimals)

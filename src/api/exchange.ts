@@ -11,17 +11,20 @@ type GetExpectedRateReturnType = {
 const getRates = async (
   srcTokenAddress: string,
   dstTokenAddress: string,
-  srcQtyWei: string,
-): Promise<{ slippageRate: string; expectedRate: string }> => {
-  const expectedRate: GetExpectedRateReturnType = await kyberProxy.getExpectedRate(
+  srcQtyWei: bigint,
+): Promise<{ expectedRate: bigint; slippageRate: bigint }> => {
+  const {
+    expectedRate,
+    slippageRate,
+  }: GetExpectedRateReturnType = await kyberProxy.getExpectedRate(
     srcTokenAddress,
     dstTokenAddress,
-    srcQtyWei,
+    srcQtyWei.toString(),
   )
 
   return {
-    expectedRate: expectedRate.expectedRate.toString(),
-    slippageRate: expectedRate.slippageRate.toString(),
+    expectedRate: BigInt(expectedRate.toString()),
+    slippageRate: BigInt(slippageRate.toString()),
   }
 }
 
