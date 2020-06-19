@@ -1,4 +1,4 @@
-import { FixedNumber, BigNumber } from "ethers"
+import { FixedNumber, BigNumber, ethers } from "ethers"
 import { useState, useEffect, useCallback } from "react"
 import { getRates, trade } from "api/exchange"
 import { NULL_ADDRESS } from "utils/addresses"
@@ -9,7 +9,7 @@ interface UseExchangeRateReturnType {
   destQty: string
   handleSrcAmountInputChange: (e: React.SyntheticEvent<HTMLInputElement>) => void
   handleDestAmountInputChange: (e: React.SyntheticEvent<HTMLInputElement>) => void
-  rate: string
+  rate: bigint
   handleTrade: () => void
 }
 
@@ -25,7 +25,7 @@ const useSwapForm = (
 ): UseExchangeRateReturnType => {
   const [srcQty, setSrcQty] = useState("")
   const [destQty, setDestQty] = useState("")
-  const [rate, setRate] = useState<bigint | undefined>() // 1 src to dest
+  const [rate, setRate] = useState(BigInt(0)) // 1 src to dest
   const [slippageRate, setSlippageRate] = useState<bigint | undefined>()
 
   useEffect(() => {
@@ -51,14 +51,18 @@ const useSwapForm = (
 
       setSrcQty(value)
 
+      if (!value) {
+        setDestQty("")
+      }
+
       if (value && destDecimals && rate) {
         const srcQtyWei = formatFromEtherToWei(value, 0)
         const destQtyWei = BigInt(srcQtyWei) * rate
-
+        console.log({ srcQtyWei, destQtyWei })
         setDestQty(formatFromWeiToEther(destQtyWei.toString(), destDecimals))
       }
     },
-    [rate, destDecimals],
+    [rate, srcDecimals, destDecimals],
   )
 
   const handleDestAmountInputChange = useCallback(
@@ -66,11 +70,19 @@ const useSwapForm = (
       const { value } = e.currentTarget
 
       setDestQty(value)
-      if (value) {
-        setSrcQty(FixedNumber.from(value).divUnsafe(FixedNumber.from(rate)).toString())
+
+      if (!value) {
+        setSrcQty("")
+      }
+
+      if (value && rate) {
+        const destQtyWei = formatFromEtherToWei(value, destDecimals)
+        const srcQtyWei = BigInt(destQtyWei) / rate
+
+        setSrcQty(formatFromWeiToEther(srcQtyWei.toString(), srcDecimals))
       }
     },
-    [rate],
+    [rate, destDecimals, srcDecimals],
   )
 
   const handleTrade = useCallback(() => {

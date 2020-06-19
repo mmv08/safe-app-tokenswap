@@ -1,4 +1,4 @@
-import { utils } from "ethers"
+import BigNumber from "bignumber.js"
 
 // This is pretty new so I'll leave the docs here
 // https://v8.dev/features/intl-numberformat
@@ -49,13 +49,21 @@ const formatToDisplayAmount = (number: string): string => {
   return formattedNumber
 }
 
-const formatFromEtherToWei = (number: string, decimals = 18): string =>
-  utils.parseUnits(number, decimals).toString()
+const formatFromEtherToWei = (number: string | number, decimals = 18): BigNumber => {
+  const numberAsBn = new BigNumber(number)
+  const multiplierAsBn = new BigNumber(10).pow(new BigNumber(decimals))
 
-const formatFromWeiToEther = (number: string, decimals = 18): string =>
-  utils.formatUnits(number, decimals)
+  return numberAsBn.times(multiplierAsBn)
+}
+
+const formatFromWeiToEther = (number: string, decimals = 18): BigNumber => {
+  const numberAsBn = new BigNumber(number)
+  const dividerAsBn = new BigNumber(10).pow(new BigNumber(decimals))
+
+  return numberAsBn.div(dividerAsBn)
+}
 
 const fromWeiToDisplayAmount = (number: string, decimals = 18): string =>
-  formatToDisplayAmount(formatFromWeiToEther(number, decimals))
+  formatToDisplayAmount(formatFromWeiToEther(number, decimals).toString())
 
 export { formatToDisplayAmount, formatFromWeiToEther, fromWeiToDisplayAmount, formatFromEtherToWei }

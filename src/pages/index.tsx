@@ -9,7 +9,7 @@ import { appsSdk } from "gnosisAppsSdk"
 import { useTokenBalances } from "hooks/useTokenBalances"
 import { useExchangeTokens } from "hooks/useExchangeTokens"
 import { useSwapForm } from "hooks/useSwapForm"
-import { fromWeiToDisplayAmount } from "utils/formatters"
+import { fromWeiToDisplayAmount, formatFromWeiToEther } from "utils/formatters"
 import { ETHER_ADDRESS } from "utils/constants"
 
 const TokenSwapContainer = styled.div`
@@ -80,6 +80,10 @@ const IndexPage: React.FC = () => {
     }
   }, [])
 
+  const fortmattedRate = rate
+    ? formatFromWeiToEther(rate.toString(), destToken?.decimals).toString()
+    : ""
+
   return (
     <Layout title="ETHSwap">
       <div>
@@ -111,7 +115,7 @@ const IndexPage: React.FC = () => {
         <div>
           {srcToken && destToken && (
             <p>
-              1 {srcToken.label} = {rate} {destToken.label}
+              1 {srcToken.label} = {fortmattedRate} {destToken.label}
             </p>
           )}
         </div>
