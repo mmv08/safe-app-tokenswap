@@ -1,5 +1,7 @@
 import BigNumber from "bignumber.js"
 
+BigNumber.set({ DECIMAL_PLACES: 18 })
+
 // This is pretty new so I'll leave the docs here
 // https://v8.dev/features/intl-numberformat
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat
