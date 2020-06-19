@@ -1,5 +1,4 @@
 import BigNumber from "bignumber.js"
-import { FixedNumber } from "ethers"
 import { useState, useEffect, useCallback } from "react"
 import { getRates, trade } from "api/exchange"
 import { NULL_ADDRESS } from "utils/addresses"
@@ -10,7 +9,7 @@ interface UseExchangeRateReturnType {
   destQty: string
   handleSrcAmountInputChange: (e: React.SyntheticEvent<HTMLInputElement>) => void
   handleDestAmountInputChange: (e: React.SyntheticEvent<HTMLInputElement>) => void
-  rate: bigint
+  rate: string
   handleTrade: () => void
 }
 
