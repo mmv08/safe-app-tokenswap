@@ -11,8 +11,8 @@ type GetExpectedRateReturnType = {
 const getRates = async (
   srcTokenAddress: string,
   dstTokenAddress: string,
-  srcQtyWei: bigint,
-): Promise<{ expectedRate: bigint; slippageRate: bigint }> => {
+  srcQtyWei: string,
+): Promise<{ expectedRate: string; slippageRate: string }> => {
   const {
     expectedRate,
     slippageRate,
@@ -23,8 +23,8 @@ const getRates = async (
   )
 
   return {
-    expectedRate: BigInt(expectedRate.toString()),
-    slippageRate: BigInt(slippageRate.toString()),
+    expectedRate: expectedRate.toString(),
+    slippageRate: slippageRate.toString(),
   }
 }
 

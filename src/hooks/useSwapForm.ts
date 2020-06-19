@@ -1,4 +1,5 @@
-import { FixedNumber, BigNumber, ethers } from "ethers"
+import BigNumber from "bignumber.js"
+import { FixedNumber } from "ethers"
 import { useState, useEffect, useCallback } from "react"
 import { getRates, trade } from "api/exchange"
 import { NULL_ADDRESS } from "utils/addresses"
@@ -23,17 +24,19 @@ const useSwapForm = (
   destDecimals: number | undefined,
   safeAddress: string | undefined,
 ): UseExchangeRateReturnType => {
-  const [srcQty, setSrcQty] = useState("")
-  const [destQty, setDestQty] = useState("")
-  const [rate, setRate] = useState(BigInt(0)) // 1 src to dest
-  const [slippageRate, setSlippageRate] = useState<bigint | undefined>()
+  const [srcQty, setSrcQty] = useState("") // in ether
+  const [destQty, setDestQty] = useState("") // in ether
+  const [rate, setRate] = useState("") // 1 src to dest in wei
+  const [slippageRate, setSlippageRate] = useState("")
 
   useEffect(() => {
     const fetchRates = async () => {
+      const decimalsAsBn = new BigNumber(srcDecimals || 18)
+      const tenAsBn = new BigNumber(10)
       const { expectedRate, slippageRate } = await getRates(
         srcId as string,
         destId as string,
-        BigInt(10 ** (destDecimals || 18)),
+        tenAsBn.pow(decimalsAsBn).toString(),
       )
 
       setRate(expectedRate)
@@ -43,7 +46,7 @@ const useSwapForm = (
     if (srcId && destId && safeAddress) {
       fetchRates()
     }
-  }, [srcId, destId, destDecimals, safeAddress])
+  }, [srcId, destId, srcDecimals, safeAddress])
 
   const handleSrcAmountInputChange = useCallback(
     async (e: React.SyntheticEvent<HTMLInputElement>) => {
@@ -56,13 +59,13 @@ const useSwapForm = (
       }
 
       if (value && destDecimals && rate) {
-        const srcQtyWei = formatFromEtherToWei(value, 0)
-        const destQtyWei = BigInt(srcQtyWei) * rate
-        console.log({ srcQtyWei, destQtyWei })
-        setDestQty(formatFromWeiToEther(destQtyWei.toString(), destDecimals))
+        const rateAsBn = new BigNumber(rate)
+        const destQtyWei = new BigNumber(value).times(rateAsBn)
+
+        setDestQty(formatFromWeiToEther(destQtyWei.toString(), destDecimals).toString())
       }
     },
-    [rate, srcDecimals, destDecimals],
+    [rate, destDecimals],
   )
 
   const handleDestAmountInputChange = useCallback(
@@ -76,13 +79,14 @@ const useSwapForm = (
       }
 
       if (value && rate) {
-        const destQtyWei = formatFromEtherToWei(value, destDecimals)
-        const srcQtyWei = BigInt(destQtyWei) / rate
+        const rateAsEther = formatFromWeiToEther(rate, srcDecimals)
+        const destQtyAsBn = new BigNumber(value)
 
-        setSrcQty(formatFromWeiToEther(srcQtyWei.toString(), srcDecimals))
+        const srcQty = destQtyAsBn.div(rateAsEther)
+        setSrcQty(srcQty.toString())
       }
     },
-    [rate, destDecimals, srcDecimals],
+    [rate, srcDecimals],
   )
 
   const handleTrade = useCallback(() => {
@@ -92,9 +96,7 @@ const useSwapForm = (
 
     trade(
       srcId,
-      BigNumber.from(srcQty)
-        .mul(FixedNumber.from(BigNumber.from(10).pow(srcDecimals).toString()))
-        .toString(),
+      formatFromEtherToWei(srcQty, srcDecimals).toString(),
       destId,
       safeAddress,
       MAX_ALLOWANCE,
