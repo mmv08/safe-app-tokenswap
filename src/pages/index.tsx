@@ -49,7 +49,7 @@ const IndexPage: React.FC = () => {
     destToken?.decimals,
     safeInfo?.safeAddress,
   )
-
+  console.log({ safeInfo })
   const { tokenBalances } = useTokenBalances(safeInfo?.safeAddress)
   const { tokens: exchangeTokens } = useExchangeTokens()
   const tokenOptions = React.useMemo(
@@ -72,8 +72,22 @@ const IndexPage: React.FC = () => {
     [exchangeTokens],
   )
 
+  const sendTestTx = () => {
+    const message = appsSdk.sendTransactions([
+      {
+        to: "0x6810e776880c02933d47db1b9fc05908e5386b96",
+        data: "0x",
+        value: "100000000000000000",
+      },
+    ])
+    console.log({ message })
+  }
+
   React.useEffect(() => {
-    appsSdk.addListeners({ onSafeInfo: setSafeInfo })
+    appsSdk.addListeners({
+      onSafeInfo: setSafeInfo,
+      onTransactionConfirmation: (event) => console.log(event),
+    })
 
     return () => {
       appsSdk.removeListeners()
@@ -122,6 +136,9 @@ const IndexPage: React.FC = () => {
         <div style={{ marginTop: 20 }}>
           <Button variant="contained" color="primary" onClick={handleTrade}>
             Swap
+          </Button>
+          <Button variant="text" color="primary" onClick={sendTestTx}>
+            Test transaction
           </Button>
         </div>
       </div>
